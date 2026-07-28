@@ -1,0 +1,25 @@
+User: Read the workflow and come up with a summary description, put it into a README cell at the top of the notebook.
+
+GitHub Copilot: I'll get the notebook summary first to understand the workflow, then create a README cell at the top. 
+
+Retrieving Notebook summary.
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/06_add_documentation/add_documentation.ipynb#1-1), lines 1 to 100
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/06_add_documentation/add_documentation.ipynb#100-100), lines 100 to 300
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/06_add_documentation/add_documentation.ipynb#300-300), lines 300 to 425
+
+Now I'll create a README markdown cell at the top of the notebook with a comprehensive summary of the workflow. 
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/06_add_documentation/add_documentation.ipynb)
+
+Done! I've added a comprehensive README cell at the top of the notebook. The summary describes:
+
+- **Overview**: The workflow tests SST performance scaling with increasing component counts using the PHOLD benchmark
+- **8 workflow steps**: From configuration and environment setup through data visualization
+- **Outputs**: The CSV results file and scaling analysis plot
+
+The README provides a clear high-level understanding of what the workflow does and its main phases.
+
+Made changes.

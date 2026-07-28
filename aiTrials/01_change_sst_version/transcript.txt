@@ -1,0 +1,95 @@
+User: Change this to run using SST version 15.1.
+
+GitHub Copilot: I’m updating the SST version in the active notebook and will first pull fresh notebook summaries so I can edit the correct cell safely.
+
+Retrieving Notebook summary.
+
+Retrieving Notebook summary.
+
+I have the latest notebook state; next I’ll locate where the SST version is set in the active notebook and then update that value to 15.1.
+
+Searched for regex `sst|SST|version|15\.1|15` (`**/aiTrials/01_change_sst_version/change_sst_version.ipynb`), 20 results
+
+I found the SST image setting in the notebook and I’m now checking existing image tag patterns in this repo to pick the correct 15.1 container tag format.
+
+Searched for regex `ghcr\.io/hpc-ai-adv-dev/sst-core:[^'\"]+` (`**/*.ipynb`), 20 P1+r6B68=1B4F48\P1+r4037=1B4F46\P1+r6B50=1B5B357E\results
+
+Searched for regex `15\.1|v15|15-` (`**/*.{ipynb,md,py,sh}`), 20 results
+
+I’m now pulling the version-comparison notebook snippet to mirror its exact SST 15.1 container tag and avoid guessing.
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb#80-80), lines 80 to 130
+
+Searched for regex `15\.0|15\.1|container_url|sst-core:` (`**/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb`), 6 results
+
+Read [](file:///home/users/stonea/sst_workflows/utils/generate_container_filename.py)
+
+I’m confirming the expected tag naming from local docs before editing so the notebook points to the correct SST 15.1 image.
+
+Searched for regex `master-latest|sst-core|container factory|15\.1` (`**/README.md|**/*.md`), no results
+
+Searched for regex `master-latest|sst-core|15\.1|container` (`**/README.md`), 6 results
+
+Read [](file:///home/users/stonea/sst_workflows/README.md)
+
+I found no local documentation for tag format, so I’ll do a quick registry check to verify the exact 15.1 tag before changing the notebook.
+
+Ran terminal command:  curl -sL 'https://ghcr.io/v2/hpc-ai-adv-dev/sst-core/tags/list' | head -c 1200
+
+Ran terminal command:  find /home/users/stonea -type f \( -name '*sst-core*' -o -name '*.sif' \) 2>/dev/null | head -n 80
+
+I’m proceeding with a direct notebook edit now: updating the SST container URL from master to a 15.1 tag in the configuration cell.
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/01_change_sst_version/change_sst_version.ipynb#82-82), lines 82 to 95
+
+Generating patch (6 lines) in [](file:///home/users/stonea/sst_workflows/aiTrials/01_change_sst_version/change_sst_version.ipynb)
+
+Searched for regex `container_url\s*=\s*'ghcr.io/hpc-ai-adv-dev/sst-core:[^']+'` (`**/aiTrials/01_change_sst_version/change_sst_version.ipynb`), 1 result
+
+I’m rechecking the notebook content because the search still reports the old tag; I’ll patch the exact serialized line including newline escapes.
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/01_change_sst_version/change_sst_version.ipynb#86-86), lines 86 to 91
+
+Searched for text `master-latest` (`**/aiTrials/01_change_sst_version/change_sst_version.ipynb`), 1 result
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/01_change_sst_version/change_sst_version.ipynb#80-80), lines 80 to 105
+
+Ran terminal command:  rg -n "master-latest|v15\.1\.0-latest" aiTrials/01_change_sst_version/change_sst_version.ipynb
+
+Ran terminal command:  grep -nE "master-latest|v15\.1\.0-latest" aiTrials/01_change_sst_version/change_sst_version.ipynb
+
+I’ve applied the edit and I’m doing one final path-safe verification using an absolute path because the terminal session is currently in a different working directory.
+
+Ran terminal command:  grep -nE "master-latest|v15\.1\.0-latest" /home/users/stonea/sst_workflows/aiTrials/01_change_sst_version/change_sst_version.ipynb
+
+Ran terminal command:  sed -n '80,95p' /home/users/stonea/sst_workflows/aiTrials/01_change_sst_version/change_sst_version.ipynb
+
+Generating patch (6 lines) in [](file:///home/users/stonea/sst_workflows/aiTrials/01_change_sst_version/change_sst_version.ipynb)
+
+The file-level patch path is blocked for notebooks here, so I’m switching to a direct notebook-cell edit to reliably update the configuration cell content.
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/01_change_sst_version/change_sst_version.ipynb#70-70), lines 70 to 132
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/01_change_sst_version/change_sst_version.ipynb)
+
+The target cell has been rewritten with the 15.1 image tag; I’ll do a final verification pass from both notebook view and raw text search.
+
+Searched for regex `master-latest|v15\.1\.0-latest` (`**/aiTrials/01_change_sst_version/change_sst_version.ipynb`), 1 result
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/01_change_sst_version/change_sst_version.ipynb#86-86), lines 86 to 92
+
+Ran terminal command:  sed -n '86,92p' /home/users/stonea/sst_workflows/aiTrials/01_change_sst_version/change_sst_version.ipynb
+
+Read changed files in [](file:///home/users/stonea/sst_workflows)
+
+I updated the SST container image in change_sst_version.ipynb to use SST 15.1 via:
+
+ghcr.io/hpc-ai-adv-dev/sst-core:v15.1.0-latest
+
+While verifying, I detected a large set of unrelated existing workspace changes and stopped to avoid touching anything unintended. How do you want to proceed?
+
+1. Keep only this notebook change and ignore the unrelated workspace changes.
+2. Also apply the same SST 15.1 update to other notebooks.
+3. Revert this specific notebook change and choose a different 15.1 tag format.
+
+Made changes.
