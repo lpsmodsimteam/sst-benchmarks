@@ -1,0 +1,87 @@
+User: Rather than using containers can you download SST and run it on the bare metal?
+
+GitHub Copilot: I’ll switch the current bare-metal workflow from container execution to a true local SST install path, then update and verify the notebook cells so it downloads/builds SST directly on the host and runs the benchmark without containers.I’m gathering the notebook structure now so I can precisely edit the right cells and keep the workflow consistent end-to-end.
+
+Retrieving Notebook summary.
+
+I found the cell map; next I’m reading the notebook content to locate where container usage is wired in so I can replace it with an SST download/build step plus local execution settings.
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/run_bare_metal.ipynb)
+
+I’ve identified all container-dependent cells. I’m now checking the local workflow helper functions to confirm the correct bare-metal launch path and avoid breaking helper APIs.
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/utils)
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/utils/workflows.py#1-1), lines 1 to 420
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/utils/workflows.py#421-421), lines 421 to 439
+
+I’m implementing two coordinated changes: updating the helper to launch SST without an image, and then updating notebook cells to clone/build SST locally and run jobs with the host binary.
+
+Generating patch (20 lines) in [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/utils/workflows.py)
+
+
+```
+
+```
+
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/run_bare_metal.ipynb)
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/run_bare_metal.ipynb)
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/run_bare_metal.ipynb)
+
+Container-specific setup is now replaced with an SST source clone/build stage. Next I’m updating benchmark build and launch cells to use the host-installed SST binary directly.
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/run_bare_metal.ipynb)
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/run_bare_metal.ipynb)
+
+Searched for regex `container_url|container_name|DOWNLOAD_CONTAINERS|run_in_container\(|--image` (`**/aiTrials/11_run_bare_metal/run_bare_metal.ipynb`), 9 results
+
+Searched for regex `launch_and_log_sst\(` (`**/aiTrials/11_run_bare_metal/utils/workflows.py`), 1 result
+
+I spotted an issue: the notebook still contains the old container code, which means my first notebook edits didn’t replace the persisted cell JSON as expected. I’m now patching the notebook file directly to guarantee the container references are fully removed.
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/run_bare_metal.ipynb#70-70), lines 70 to 320
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/run_bare_metal.ipynb#320-320), lines 320 to 380
+
+Searched for regex `container_url|container_name|DOWNLOAD_CONTAINERS|run_in_container\(|--image` (`**/aiTrials/11_run_bare_metal/run_bare_metal.ipynb`), 9 results
+
+Ran terminal command:  rg -n "container_url|container_name|DOWNLOAD_CONTAINERS|run_in_container\(|--image" aiTrials/11_run_bare_metal/run_bare_metal.ipynb | cat
+
+Ran terminal command:  grep -nE "container_url|container_name|DOWNLOAD_CONTAINERS|run_in_container\(|--image" aiTrials/11_run_bare_metal/run_bare_metal.ipynb
+
+Ran terminal command:  grep -nE "container_url|container_name|DOWNLOAD_CONTAINERS|run_in_container\(|--image" /home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/run_bare_metal.ipynb
+
+I confirmed the on-disk notebook still had the old container JSON, so I’m applying a direct JSON patch to the file itself to ensure the bare-metal changes are actually persisted.
+
+Generating patch (83 lines) in [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/run_bare_metal.ipynb)
+
+Read changed files in [](file:///home/users/stonea/sst_workflows)
+
+Checked [](file:///home/users/stonea/sst_workflows/aiTrials/11_run_bare_metal/utils/workflows.py), no problems found
+
+Yes. I updated the bare-metal trial workflow to download, build, and run SST without containers.
+
+What I changed:
+1. Replaced container parameters with bare-metal SST source/build parameters in run_bare_metal.ipynb.
+2. Replaced the “Download containers” step with a “Download and build SST (bare metal)” step that:
+   - clones SST from source,
+   - runs autogen/configure/make/make install,
+   - adds the local SST install bin directory to PATH.
+3. Updated benchmark build to run directly on host (no container wrapper) in run_bare_metal.ipynb.
+4. Updated job launch to run with host SST by passing image = None in run_bare_metal.ipynb.
+5. Updated helper launch logic so it supports both modes:
+   - container launch when image is set,
+   - bare-metal srun launch when image is not set.
+   File: workflows.py
+
+Validation:
+1. Python diagnostics report no errors in workflows.py.
+
+I did not run the full notebook end-to-end since building SST and running jobs is environment and queue dependent. If you want, I can execute the key cells in order and help troubleshoot any build dependency issues that show up on your system.
+
+Made changes.

@@ -1,0 +1,83 @@
+User: Rather than showing the total execution time show the resulting total memory usage.
+
+GitHub Copilot: Optimizing tool selection...I’m tracing the graph data path from the current notebook and nearby workflow utilities to find where the plot is still bound to total execution time.
+
+Retrieving Notebook summary.
+
+Searched for regex `execution time|total execution time|memory usage|total memory` (`sst_workflows` · `**/*`), 3 results
+
+Read memory
+
+I found the request text in the notebook; next I’m reading the plotting cells and the workflow helpers to locate the exact metric field that feeds the chart.
+
+Searched for regex `execution_time|total_execution|memory_usage|resident|rss|time_with|time_without` (`sst_workflows` · `aiTrials/04_change_graph_datasource/change_graph_datasource.ipynb`), no results
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/04_change_graph_datasource/change_graph_datasource.ipynb#60-60), lines 60 to 230
+
+Read [](file:///home/users/stonea/sst_workflows/utils/workflows.py#1-1), lines 1 to 260
+
+The notebook logic is inline rather than delegated. I’m reading the later cells now, where the JSON results are aggregated and plotted.
+
+Searched for regex `results.json|json.load|plot\(|plt\.|executionTime|memory|timing` (`sst_workflows` · `aiTrials/04_change_graph_datasource/change_graph_datasource.ipynb`), 8 results
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/04_change_graph_datasource/change_graph_datasource.ipynb#230-230), lines 230 to 425
+
+The plot cell is still hard-coded to total_duration. I’m checking the extractor output now to confirm the memory column name before changing the notebook.
+
+Searched for regex `def extract_sst_output_in_files|def convert_to_csv|total_duration|memory` (`sst_workflows` · `utils/workflows.py`), 23 results
+
+Read [](file:///home/users/stonea/sst_workflows/utils/workflows.py#260-260), lines 260 to 439
+
+Plan:
+1. Update the plot cell to read the extracted total-memory metric instead of total duration.
+2. Keep the display readable by converting the CSV’s byte-normalized values to a human unit in the chart.
+3. Run a narrow validation against the plotting logic.
+
+Created 3 todos
+
+I’m changing only the plot cell: switch to the extracted `total_memory` field, scale it from bytes to GiB for the y-axis, and fail clearly if that column is missing.
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/04_change_graph_datasource/change_graph_datasource.ipynb)
+
+The edit is in. I’m doing one focused check on the updated plotting logic now: confirm the `total_memory` path and GiB conversion behave as intended.
+
+Checked [](file:///home/users/stonea/sst_workflows/aiTrials/04_change_graph_datasource/change_graph_datasource.ipynb), 1 problem found
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "/home/users/stonea/sst_workflows"
+}
+
+Creating a Virtual Environment
+Completed with input: {
+  "resourcePath": "/home/users/stonea/sst_workflows"
+}
+
+Ran `pylanceRunCodeSnippet` 
+Completed with input: {
+  "workspaceRoot": "file:///home/users/stonea/sst_workflows",
+  "workingDirectory": "/home/users/stonea/sst_workflows",
+  "codeSnippet": "import pandas as pd\n\ndf = pd.DataFrame({\"Size\": [100, 200], \"total_memory\": [1024 ** 3, 2 * 1024 ** 3]})\nplot_value = 'total_memory'\nif plot_value not in df.columns:\n    raise RuntimeError(f\"missing {plot_value}\")\n\ny_values_gib = df[plot_value] / (1024 ** 3)\nassert list(y_values_gib) == [1.0, 2.0]\nprint(y_values_gib.tolist())",
+  "timeout": 30000
+}
+
+The first check hit an environment issue unrelated to the change: the notebook venv does not have `pandas`. I’m rerunning the same logic with a dependency-free check so the edit itself is still validated.
+
+Ran `pylanceRunCodeSnippet` 
+Completed with input: {
+  "workspaceRoot": "file:///home/users/stonea/sst_workflows",
+  "workingDirectory": "/home/users/stonea/sst_workflows",
+  "codeSnippet": "columns = {\"Size\": [100, 200], \"total_memory\": [1024 ** 3, 2 * 1024 ** 3]}\nplot_value = 'total_memory'\nif plot_value not in columns:\n    raise RuntimeError(f\"missing {plot_value}\")\n\ny_values_gib = [value / (1024 ** 3) for value in columns[plot_value]]\nassert y_values_gib == [1.0, 2.0]\nprint(y_values_gib)",
+  "timeout": 30000
+}
+
+Completed: *Update plot metric* (1/3)
+
+The plot in change_graph_datasource.ipynb now uses `total_memory` instead of `total_duration`. I also converted the y-axis from the CSV’s byte-normalized values to GiB so the chart stays readable, and added a clear stop if the `total_memory` column is missing.
+
+I validated the updated metric-selection and GiB conversion logic with a focused Python check. I did not run the notebook end-to-end here; the workspace notebook environment currently lacks `pandas`, so a direct execution of that plotting cell would fail until that dependency is available.
+
+1. Install `pandas` into the notebook environment if you want me to run the notebook cell here.
+2. Rerun the preprocess and plot cells to regenerate the chart from your actual results.
+
+Made changes.

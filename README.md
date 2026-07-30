@@ -9,6 +9,7 @@ Currently, it includes:
 - [Containers](sst-containers/README.md)
 - A memory model
 - [Debug Use Cases](debugCases/README.md)
+- [AI Trials](aiTrials/README.md)
 
 ### The benchmarks (found in their respective directories):
 - [pingpong](pingpong/README.md) - simulates messages bouncing back-and-forth in one or two dimensions.
@@ -32,3 +33,9 @@ stories) that demonstrate situations where a debugger may be desirable. We use
 these stories to examine the capabilities of SST's debugger and use them to
 motivate "wishlist" features that could be added to future versions. See the
 [README](debugCases/README.md) for details.
+
+### AI Trials
+The `aiTrials` directory explores the impact of applying various "wishlist"
+prompts using GPT to alter an example Jupyter notebook-based workflow.  See the
+[README](aiTrials/README.md) for details.
+

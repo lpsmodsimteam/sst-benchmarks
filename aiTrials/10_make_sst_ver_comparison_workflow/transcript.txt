@@ -1,0 +1,76 @@
+User: Structure this workflow to run twice once using SST version 15.0 and once using SST version 15.1. Present both results in a single gaph that I can use to compare the relative performance.
+
+GitHub Copilot: Optimizing tool selection...I’m going to inspect the current notebook and shared workflow utilities to find where SST version and plotting are configured, then I’ll update the notebook to run both versions and render a single comparison graph.I’ll quickly map the notebook cells first so I can patch the right code cell(s) without disturbing the rest of your workflow.
+
+Retrieving Notebook summary.
+
+I found the notebook structure; next I’ll read the key code cells to modify SST version iteration and the final plotting step into one combined compariP1+r4631=1B5B32337E\P1+r4632=1B5B32347E\P0+r2531\P0+r2638\P1+r6B62=7F\P0+r6B49\P1+r6B44=1B5B337E\P1+r6B68=1B4F48\P1+r4037=1B4F46\P1+r6B50=1B5B357E\son graph.
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb)
+
+I’ve located the exact cells that drive run, preprocess, and plot. I’ll now check existing utilities and prior trials for how SST versions are represented so the two-run setup uses valid container tags and parsing paths.
+
+Searched for regex `sst-core|15.0|15.1|container_url|download_custom_container` (`**/*.py`), 63 results
+
+Searched for regex `SST 15|version|results.csv|runs` (`**/aiTrials/**`), 200 results
+
+I hit a missing trial transcript (it doesn’t exist in this folder), so I’m proceeding directly with notebook edits. I’ll verify helper behavior for log inspection/extraction to keep preprocessing compatible with per-version run directories.
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/utils/workflows.py#150-150), lines 150 to 260
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/utils/workflows.py#1-1), lines 1 to 150
+
+Searched for regex `container_url\s*=|download_sst_container\(|15\.1|15\.0` (`**/aiTrials/01_change_sst_version/change_sst_version.ipynb`), 32 results
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/README.md#55-55), lines 55 to 90
+
+Searched for regex `v15\.0|v15\.1|15\.0-latest|15\.1-latest|15\.1\.0-latest|download_sst_container\("` (`**/*.{ipynb,md,txt,py}`), 33 results
+
+I confirmed how log extraction works and identified all cells that must change. I’m now editing the notebook to: define two SST versions, download both containers, run jobs per version into separate folders, merge both datasets, and plot them together on one graph.
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb)
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb)
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb)
+
+Core configuration and setup cells are updated. Next I’m patching execution, preprocessing, and plotting cells so both versions are run and merged into one comparison dataset/graph.
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb)
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb)
+
+Edit [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb)
+
+The notebook now has dual-version execution and combined plotting logic. I’ll do a quick integrity pass by re-reading the edited cells to verify syntax and ensure there are no stale single-version references.
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb#70-70), lines 70 to 140
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb#245-245), lines 245 to 430
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb#430-430), lines 430 to 470
+
+Read [](file:///home/users/stonea/sst_workflows/aiTrials/12_make_sst_ver_comparison_workflow/make_sst_ver_comparison_workflow.ipynb#165-165), lines 165 to 245
+
+Updated the notebook to run both SST versions and compare them on one graph in make_sst_ver_comparison_workflow.ipynb.
+
+What changed:
+1. Replaced single-container config with a version map:
+- SST 15.0 -> ghcr.io/hpc-ai-adv-dev/sst-core:v15.0.0
+- SST 15.1 -> ghcr.io/hpc-ai-adv-dev/sst-core:v15.1.0
+2. Download step now fetches both containers and stores them by version.
+3. Build step uses one of the configured containers to build PHOLD once.
+4. Run step now loops over both versions and all trial sizes, writing logs to per-version folders under runs:
+- runs/sst_15_0
+- runs/sst_15_1
+5. Preprocess step now:
+- extracts each version separately,
+- writes per-version CSVs,
+- merges them into one combined file at runs/results.csv with an SST Version column.
+6. Plot step now reads the combined CSV and draws both version curves on a single graph for direct performance comparison.
+
+Natural next steps:
+1. Run cells top-to-bottom from Download containers through Plot.
+2. If either container tag is unavailable in your registry, adjust only the values in the sst_container_uris dictionary at the top of the notebook and rerun.
+
+Made changes.
