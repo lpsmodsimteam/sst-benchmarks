@@ -54,12 +54,12 @@ shared module as well.
 
 # The wishlist prompts
 
-We apply the following prompts to the notebook. For each prompt we give a
-camel_cased name that we use as the filename for the associated workbook where
-we apply the prompt.  These prompts are intentionally informal and loosely
-specified. The goal is not to demonstrate effective prompt engineering, but to
-reflect the kinds of casual, off-the-cuff requests a user might make during
-real-world exploratory work.
+Using GPT-5.3-Codex using Copilot in VSCode, we apply the following prompts to
+the notebook. For each prompt we give a camel_cased name that we use as the
+filename for the associated workbook where we apply the prompt.  These prompts
+are intentionally informal and loosely specified. The goal is not to
+demonstrate effective prompt engineering, but to reflect the kinds of casual,
+off-the-cuff requests a user might make during real-world exploratory work.
 
 ### Changing data gathering parameters:
 
